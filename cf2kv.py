@@ -70,6 +70,9 @@ def read_configuration_file(fname:str):
             except:
                 logger.error(f'Could not open JSON file {fname}.', exc_info=True)
                 return None
+
+        if type(ydict) != dict: return None # Only support dictionary trees.
+
         kv_pairs = []
         prefix_stack = [['', ydict]] # each element is a (prefix, dictionary) tuple.
         while len(prefix_stack) > 0:
