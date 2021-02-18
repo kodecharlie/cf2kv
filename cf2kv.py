@@ -86,6 +86,23 @@ def read_configuration_file(fname:str):
                     kv_pairs.append({nxt_prefix: val})
         return kv_pairs
 
+    # Assume *.ini files are Microsoft-style configuration files. Prefix each property name by its respective namespace.
+    if fname.endswith('.ini'):
+        kv_pairs = []
+        iniconf = configparser.ConfigParser()
+        try:
+            iniconf.read(fname)
+        except:
+            logger.error(f'Could not open INI file {fname}.', exc_info=True)
+            return None
+        for ns in iniconf:
+            cur_config = iniconf[ns]
+            for propname in cur_config:
+                key = f'{ns}.{propname}'
+                val = cur_config[propname]
+                kv_pairs.append({key: val})
+        return kv_pairs
+
     return None
 
 def upload_configuration_to_consul():
